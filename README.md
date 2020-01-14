@@ -1,9 +1,6 @@
-# Phaser 3 Webpack Project Template
+# Phaser 3
 
-A Phaser 3 project template with ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/)
-that includes hot-reloading for development and production-ready builds.
-
-Loading images via JavaScript module `import` is also supported.
+A Phaser 3 project example game
 
 ## Requirements
 
