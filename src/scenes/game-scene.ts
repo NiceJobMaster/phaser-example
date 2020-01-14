@@ -3,14 +3,14 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 }
 
 export default class GameScene extends Phaser.Scene {
-  public platforms
-  public player
-  public cursors
-  public stars
+  public platforms: Phaser.Physics.Arcade.StaticGroup
+  public player: Phaser.Physics.Arcade.Sprite
+  public cursors: Phaser.Types.Input.Keyboard.CursorKeys
+  public stars: Phaser.Physics.Arcade.Group
   public score = 0
-  public scoreText
-  public bombs
-  public gameOver
+  public scoreText: Phaser.GameObjects.Text
+  public bombs: Phaser.Physics.Arcade.Group
+  public gameOver: boolean
 
   constructor() {
     super(sceneConfig)
@@ -73,7 +73,7 @@ export default class GameScene extends Phaser.Scene {
       setXY: { x: 12, y: 0, stepX: 70 },
     })
 
-    this.stars.children.iterate(child => {
+    this.stars.children.iterate((child: any) => {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8))
     })
 
@@ -121,7 +121,7 @@ export default class GameScene extends Phaser.Scene {
     this.scoreText.setText('Score: ' + this.score)
 
     if (this.stars.countActive(true) === 0) {
-      this.stars.children.iterate(child => {
+      this.stars.children.iterate((child: any) => {
         child.enableBody(true, child.x, 0, true, true)
       })
     }
