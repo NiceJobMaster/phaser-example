@@ -2,7 +2,11 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   key: 'Game',
 }
 
+const width = window.innerWidth < 1300 ? 1325 : window.innerWidth
+const height = window.innerHeight
+
 export default class GameScene extends Phaser.Scene {
+  public sky: Phaser.GameObjects.Image
   public platforms: Phaser.Physics.Arcade.StaticGroup
   public player: Phaser.Physics.Arcade.Sprite
   public cursors: Phaser.Types.Input.Keyboard.CursorKeys
@@ -28,19 +32,28 @@ export default class GameScene extends Phaser.Scene {
   }
 
   public create() {
-    this.add.image(400, 300, 'sky')
+    this.physics.world.bounds.width = width
+    this.physics.world.bounds.height = height
+
+    this.sky = this.add.image(0, 0, 'sky')
+    this.sky.setOrigin(0, 0)
+    this.sky.setDisplaySize(this.game.scale.width, this.game.scale.height)
 
     this.platforms = this.physics.add.staticGroup()
-    this.platforms
-      .create(400, 568, 'ground')
-      .setScale(2)
-      .refreshBody()
+    const ground = this.platforms.create(
+      0,
+      height - 64,
+      'ground'
+    ) as Phaser.Physics.Arcade.Image
+    ground.setOrigin(0.0)
+    ground.setDisplaySize(width, ground.height * 2)
+    ground.refreshBody()
+
     this.platforms.create(600, 400, 'ground')
     this.platforms.create(50, 250, 'ground')
     this.platforms.create(750, 220, 'ground')
 
     this.player = this.physics.add.sprite(100, 450, 'dude')
-
     this.player.setBounce(0.2)
     this.player.setCollideWorldBounds(true)
 
@@ -65,7 +78,6 @@ export default class GameScene extends Phaser.Scene {
     })
 
     this.cursors = this.input.keyboard.createCursorKeys()
-    this.physics.add.collider(this.player, this.platforms)
 
     this.stars = this.physics.add.group({
       key: 'star',
@@ -73,11 +85,12 @@ export default class GameScene extends Phaser.Scene {
       setXY: { x: 12, y: 0, stepX: 70 },
     })
 
-    this.stars.children.iterate((child: any) => {
-      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8))
-    })
+    this.stars.children.iterate(child =>
+      (child.body as Phaser.Physics.Arcade.Body).setBounceY(
+        Phaser.Math.FloatBetween(0.4, 0.8)
+      )
+    )
 
-    this.physics.add.collider(this.stars, this.platforms)
     this.physics.add.overlap(
       this.player,
       this.stars,
@@ -93,6 +106,8 @@ export default class GameScene extends Phaser.Scene {
 
     this.bombs = this.physics.add.group()
 
+    this.physics.add.collider(this.player, this.platforms)
+    this.physics.add.collider(this.stars, this.platforms)
     this.physics.add.collider(this.bombs, this.platforms)
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this)
   }
@@ -121,10 +136,11 @@ export default class GameScene extends Phaser.Scene {
     this.scoreText.setText('Score: ' + this.score)
 
     if (this.stars.countActive(true) === 0) {
-      this.stars.children.iterate((child: any) => {
+      this.stars.children.iterate((child: any) =>
         child.enableBody(true, child.x, 0, true, true)
-      })
+      )
     }
+
     const x =
       player.x < 400
         ? Phaser.Math.Between(400, 800)

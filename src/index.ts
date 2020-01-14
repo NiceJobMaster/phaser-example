@@ -16,7 +16,3 @@ const config: Phaser.Types.Core.GameConfig = {
 }
 
 export const game = new Phaser.Game(config)
-
-window.addEventListener('resize', () => {
-  game.scale.refresh()
-})
