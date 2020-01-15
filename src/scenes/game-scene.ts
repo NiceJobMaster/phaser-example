@@ -46,12 +46,13 @@ export default class GameScene extends Phaser.Scene {
     ground.setDisplaySize(width, ground.height * 2);
     ground.refreshBody();
 
-    this.platforms.create(600, 400, 'ground');
-    this.platforms.create(50, 250, 'ground');
-    this.platforms.create(750, 220, 'ground');
+    this.platforms.create(width / 2, height / 1.5, 'ground');
+    this.platforms.create(50, height / 3, 'ground');
+    this.platforms.create(750, height / 4, 'ground');
 
-    this.player = this.physics.add.sprite(100, 450, 'dude');
+    this.player = this.physics.add.sprite(100, height / 2 + 48, 'dude');
     this.player.setBounce(0.2);
+    this.player.setOrigin(0, 0);
     this.player.setCollideWorldBounds(true);
 
     this.anims.create({
@@ -78,7 +79,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.stars = this.physics.add.group({
       key: 'star',
-      repeat: 11,
+      repeat: Math.round(width / 70),
       setXY: { x: 12, y: 0, stepX: 70 },
     });
 
@@ -100,7 +101,8 @@ export default class GameScene extends Phaser.Scene {
       fill: '#fff',
       fontFamily: 'Roboto',
     });
-    this.gameOverText.setOrigin(0.5, 0.5)
+
+    this.gameOverText.setOrigin(0.5, 0.5);
     this.gameOverText.setVisible(false);
     this.gameOverText.setScrollFactor(0);
 
@@ -131,7 +133,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
+      this.player.setVelocityY(-(height / 2));
     }
   }
 
