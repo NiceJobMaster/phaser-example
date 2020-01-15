@@ -1,5 +1,5 @@
-import * as Phaser from 'phaser'
-import Scenes from './scenes'
+import * as Phaser from 'phaser';
+import Scenes from './scenes';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -13,6 +13,10 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
   scene: Scenes,
-}
+};
 
-export const game = new Phaser.Game(config)
+export const game = new Phaser.Game(config);
+
+window.addEventListener('resize', () => {
+  return game.scale.resize(window.innerWidth, window.innerHeight);
+});
