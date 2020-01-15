@@ -1,5 +1,5 @@
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
-  key: 'Game',
+  key: 'GameScene',
 }
 
 const width = window.innerWidth < 1300 ? 1325 : window.innerWidth
@@ -15,6 +15,7 @@ export default class GameScene extends Phaser.Scene {
   public scoreText: Phaser.GameObjects.Text
   public bombs: Phaser.Physics.Arcade.Group
   public gameOver: boolean
+  public gameOverText: Phaser.GameObjects.Text
 
   constructor() {
     super(sceneConfig)
@@ -91,6 +92,28 @@ export default class GameScene extends Phaser.Scene {
       )
     )
 
+    this.scoreText = this.add.text(16, 16, 'Score: 0', {
+      fontSize: '32px',
+      fill: '#000',
+      fontFamily: 'Roboto',
+    })
+    this.scoreText.setScrollFactor(0)
+
+    this.bombs = this.physics.add.group()
+
+    this.gameOverText = this.add.text(
+      width / 2 - 100,
+      height / 2 - 50,
+      'Game Over!',
+      { fontSize: '50px', fill: '#fff' }
+    )
+    this.gameOverText.setVisible(false)
+    this.gameOverText.setScrollFactor(0)
+
+    this.physics.add.collider(this.player, this.platforms)
+    this.physics.add.collider(this.stars, this.platforms)
+    this.physics.add.collider(this.bombs, this.platforms)
+
     this.physics.add.overlap(
       this.player,
       this.stars,
@@ -98,21 +121,14 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     )
-
-    this.scoreText = this.add.text(16, 16, 'Score: 0', {
-      fontSize: '32px',
-      fill: '#000',
-    })
-
-    this.bombs = this.physics.add.group()
-
-    this.physics.add.collider(this.player, this.platforms)
-    this.physics.add.collider(this.stars, this.platforms)
-    this.physics.add.collider(this.bombs, this.platforms)
-    this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this)
+    this.physics.add.overlap(this.player, this.bombs, this.hitBomb, null, this)
   }
 
   public update() {
+    if (this.gameOver) {
+      return
+    }
+
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-160)
       this.player.anims.play('left', true)
@@ -129,7 +145,10 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  public collectStar(player, star) {
+  public collectStar(
+    player: Phaser.Physics.Arcade.Sprite,
+    star: Phaser.Physics.Arcade.Sprite
+  ) {
     star.disableBody(true, true)
 
     this.score += 10
@@ -156,5 +175,6 @@ export default class GameScene extends Phaser.Scene {
     player.setTint(0xff0000)
     player.anims.play('turn')
     this.gameOver = true
+    this.gameOverText.setVisible(true)
   }
 }
