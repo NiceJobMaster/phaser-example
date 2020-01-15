@@ -2,8 +2,8 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   key: 'GameScene',
 };
 
-const width = window.innerWidth < 1300 ? 1325 : window.innerWidth;
-const height = window.innerHeight;
+const width = window.innerWidth < 1300 ? 1300 : window.innerWidth;
+const height = window.innerHeight < 600 ? 600 : window.innerHeight;
 
 export default class GameScene extends Phaser.Scene {
   public sky: Phaser.GameObjects.Image;
