@@ -1,3 +1,4 @@
-import GameScene from './game-scene'
+import GameScene from './game-scene';
+import MainMenu from './main-menu';
 
-export default [GameScene]
+export default [MainMenu, GameScene];

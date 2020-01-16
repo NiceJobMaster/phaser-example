@@ -12,10 +12,12 @@ export default class GameScene extends Phaser.Scene {
   public cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   public stars: Phaser.Physics.Arcade.Group;
   public score = 0;
+  public highScore = 0;
   public scoreText: Phaser.GameObjects.Text;
   public bombs: Phaser.Physics.Arcade.Group;
   public gameOver: boolean;
   public gameOverText: Phaser.GameObjects.Text;
+  public gameOverZone: Phaser.GameObjects.Zone;
 
   constructor() {
     super(sceneConfig);
@@ -46,13 +48,12 @@ export default class GameScene extends Phaser.Scene {
     ground.setDisplaySize(width, ground.height * 2);
     ground.refreshBody();
 
-    this.platforms.create(width / 2, height / 1.5, 'ground');
-    this.platforms.create(50, height / 3, 'ground');
-    this.platforms.create(750, height / 4, 'ground');
+    this.platforms.create(600, height - 325, 'ground');
+    this.platforms.create(50, height - 475, 'ground');
+    this.platforms.create(750, height - 580, 'ground');
 
     this.player = this.physics.add.sprite(100, height / 2 + 48, 'dude');
     this.player.setBounce(0.2);
-    this.player.setOrigin(0, 0);
     this.player.setCollideWorldBounds(true);
 
     this.anims.create({
@@ -106,6 +107,18 @@ export default class GameScene extends Phaser.Scene {
     this.gameOverText.setVisible(false);
     this.gameOverText.setScrollFactor(0);
 
+    this.gameOverZone = this.add
+      .zone(
+        this.gameOverText.x - this.gameOverText.width * this.gameOverText.originX - 16,
+        this.gameOverText.y - this.gameOverText.height * this.gameOverText.originY - 16,
+        this.gameOverText.width + 32,
+        this.gameOverText.height + 32,
+      )
+      .setOrigin(0, 0)
+      .setInteractive()
+      .once('pointerup', () => this.scene.start('MainMenu'))
+      .setVisible(false);
+
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.stars, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
@@ -133,7 +146,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-(height / 2));
+      this.player.setVelocityY(-450);
     }
   }
 
@@ -162,5 +175,9 @@ export default class GameScene extends Phaser.Scene {
     player.anims.play('turn');
     this.gameOver = true;
     this.gameOverText.setVisible(true);
+    this.gameOverZone.setVisible(true);
+    if (this.highScore < this.score) {
+      this.highScore = this.score;
+    }
   }
 }
