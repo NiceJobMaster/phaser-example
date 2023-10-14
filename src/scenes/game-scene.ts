@@ -1,3 +1,9 @@
+import sky from '../assets/sky.png'
+import platform from '../assets/platform.png'
+import star from '../assets/star.png'
+import bomb from '../assets/bomb.png'
+import dude from '../assets/dude.png'
+
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   key: 'GameScene',
 };
@@ -24,11 +30,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   public preload() {
-    this.load.image('sky', 'src/assets/sky.png');
-    this.load.image('ground', 'src/assets/platform.png');
-    this.load.image('star', 'src/assets/star.png');
-    this.load.image('bomb', 'src/assets/bomb.png');
-    this.load.spritesheet('dude', 'src/assets/dude.png', {
+    this.load.image('sky', sky);
+    this.load.image('ground', platform);
+    this.load.image('star', star);
+    this.load.image('bomb', bomb);
+    this.load.spritesheet('dude', dude, {
       frameWidth: 32,
       frameHeight: 48,
     });
@@ -84,13 +90,13 @@ export default class GameScene extends Phaser.Scene {
       setXY: { x: 12, y: 0, stepX: 70 },
     });
 
-    this.stars.children.iterate(child =>
-      (child.body as Phaser.Physics.Arcade.Body).setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)),
-    );
+    // this.stars.children.iterate(child =>
+    //   (child.body as Phaser.Physics.Arcade.Body).setBounceY(Phaser.Math.FloatBetween(0.4, 0.8)),
+    // );
 
     this.scoreText = this.add.text(16, 16, 'Score: 0', {
       fontSize: '32px',
-      fill: '#000',
+      // fill: '#000',
       fontFamily: 'Roboto',
     });
     this.scoreText.setScrollFactor(0);
@@ -99,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.gameOverText = this.add.text(window.innerWidth / 2, window.innerHeight / 2, 'Game Over!', {
       fontSize: '50px',
-      fill: '#fff',
+      // fill: '#fff',
       fontFamily: 'Roboto',
     });
 
@@ -156,11 +162,11 @@ export default class GameScene extends Phaser.Scene {
     this.score += 10;
     this.scoreText.setText('Score: ' + this.score);
 
-    if (this.stars.countActive(true) === 0) {
-      this.stars.children.iterate((child: Phaser.Physics.Arcade.Sprite) =>
-        child.enableBody(true, child.body.x, 0, true, true),
-      );
-    }
+    // if (this.stars.countActive(true) === 0) {
+    //   this.stars.children.iterate((child: Phaser.Physics.Arcade.Sprite) =>
+    //     child.enableBody(true, child.body.x, 0, true, true),
+    //   );
+    // }
 
     const x = player.x < 400 ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
     const bomb = this.bombs.create(x, 16, 'bomb') as Phaser.Physics.Arcade.Sprite;

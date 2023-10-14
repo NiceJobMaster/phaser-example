@@ -1,4 +1,5 @@
 import GameScene from './game-scene';
+import logo from '../assets/logo.png';
 
 export default class MainMenu extends Phaser.Scene {
   constructor() {
@@ -6,7 +7,7 @@ export default class MainMenu extends Phaser.Scene {
   }
 
   public preload() {
-    this.load.image('logo', 'src/assets/logo.png');
+    this.load.image('logo', logo);
   }
 
   public create() {
